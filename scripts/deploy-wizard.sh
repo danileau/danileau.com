@@ -111,6 +111,16 @@ ssh -o BatchMode=yes -o ConnectTimeout=8 "$DEPLOY_HOST" true 2>/dev/null \
 
 remote() { ssh -o BatchMode=yes "$DEPLOY_HOST" "$@"; }
 
+# Checksums are compared across two operating systems, so neither the tool nor
+# the collation can be assumed. `sort` under en_US.UTF-8 ignores the leading dot
+# in .htaccess and files it among the letters; BSD sort uses byte order and puts
+# it first. Same bytes, different order, different aggregate — a green upload
+# reported as corruption. LC_ALL=C makes both sides agree, and the lists are
+# compared line by line so a real mismatch can name the file.
+SUMCMD='if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasum -a 256 "$@"; fi'
+sums_local()  { ( cd "$1" && find . -type f ! -name .build.json -exec sha256sum {} + | LC_ALL=C sort -k2 ); }
+sums_remote() { remote "cd '$1' && find . -type f ! -name .build.json -exec sh -c '$SUMCMD' _ {} + | LC_ALL=C sort -k2"; }
+
 live_release()   { remote "readlink '$DEPLOY_LINK' 2>/dev/null | xargs -r basename" || true; }
 list_releases()  { remote "ls -1 '$DEPLOY_ROOT/releases' 2>/dev/null | sort -r" || true; }
 live_stamp()     { curl -fsS --max-time 10 "$DEPLOY_URL/.build.json" 2>/dev/null || true; }
@@ -231,13 +241,15 @@ rsync -a --delete --checksum "$ROOT/dist/" "$DEPLOY_HOST:$DEPLOY_ROOT/releases/$
 
 # Re-checksum on the host. rsync reporting success is not the same as the bytes
 # being right, and this is the last moment it is cheap to find out.
-LOCAL_SUM="$( cd "$ROOT/dist" && find . -type f ! -name .build.json -exec sha256sum {} + | sort -k2 | sha256sum | cut -d' ' -f1 )"
-REMOTE_SUM="$( remote "cd '$DEPLOY_ROOT/releases/$RELEASE' && find . -type f ! -name .build.json -exec sha256sum {} + | sort -k2 | sha256sum | cut -d' ' -f1" )"
-[ "$LOCAL_SUM" = "$REMOTE_SUM" ] || {
+LOCAL_SUMS="$(sums_local "$ROOT/dist")"
+REMOTE_SUMS="$(sums_remote "$DEPLOY_ROOT/releases/$RELEASE")"
+if [ "$LOCAL_SUMS" != "$REMOTE_SUMS" ]; then
+  echo "${RED}These differ between here and the host:${R}"
+  diff <(printf '%s\n' "$LOCAL_SUMS") <(printf '%s\n' "$REMOTE_SUMS") | sed 's/^/  /' || true
   remote "rm -rf '$DEPLOY_ROOT/releases/$RELEASE'"
   die "checksums differ after upload — the release was removed, nothing was switched"
-}
-ok "checksums match (${LOCAL_SUM:0:12}…)"
+fi
+ok "$(printf '%s\n' "$LOCAL_SUMS" | wc -l | tr -d ' ') files verified byte for byte on the host"
 
 # ----- 3. switch, then prove it ---------------------------------------------
 PREVIOUS="$(live_release)"
