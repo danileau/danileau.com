@@ -21,6 +21,7 @@ export const de: Content = {
   },
 
   hero: {
+    role: "System-Architekt · Bern · seit 2008",
     eyebrow: "Gebaut. Betrieben. Entworfen.",
     lede1: "Seit {years} Jahren durch alle Schichten —",
     lede2: "vom ersten Commit bis zum Incident um 3 Uhr nachts.",
@@ -28,7 +29,7 @@ export const de: Content = {
     lede4: "Peak Dunning-Kruger war beim ersten Git-Push.",
     ctaContact: "Kontakt",
     ctaWork: "Projekte ansehen",
-    scroll: "Scroll",
+    plaque: "Jahre durch\nalle Schichten",
   },
 
   path: {
@@ -145,6 +146,7 @@ export const de: Content = {
   toolbox: {
     kicker: "Querschnitt",
     title: "Werkzeugkasten",
+    sides: "Beilagen — im Preis inbegriffen",
     categories: [
       { title: "Methoden", items: "TOGAF ABB/SBB · ArchiMate 3.2 · BPMN 2.0 · UML 2.5 · SAFe (10+ Jahre) · HERMES (16 Jahre)" },
       { title: "Security", items: "DefectDojo · SAST/DAST · Trivy · SBOM · Argon2id · AES-256-GCM · Keycloak · Zero-Knowledge" },

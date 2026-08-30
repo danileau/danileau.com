@@ -19,6 +19,7 @@ export const en = {
   },
 
   hero: {
+    role: "System architect · Bern · since 2008",
     eyebrow: "Built. Operated. Designed.",
     lede1: "{years} years through every layer —",
     lede2: "from the first commit to the incident at 3 a.m.",
@@ -26,7 +27,7 @@ export const en = {
     lede4: "Peak Dunning-Kruger was the first git push.",
     ctaContact: "Get in touch",
     ctaWork: "See the work",
-    scroll: "Scroll",
+    plaque: "years through\nevery layer",
   },
 
   path: {
@@ -143,6 +144,7 @@ export const en = {
   toolbox: {
     kicker: "Cross-section",
     title: "The Toolbox",
+    sides: "Sides — included in the price",
     categories: [
       { title: "Methods", items: "TOGAF ABB/SBB · ArchiMate 3.2 · BPMN 2.0 · UML 2.5 · SAFe (10+ yrs) · HERMES (16 yrs)" },
       { title: "Security", items: "DefectDojo · SAST/DAST · Trivy · SBOM · Argon2id · AES-256-GCM · Keycloak · zero-knowledge" },

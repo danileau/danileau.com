@@ -1,51 +1,36 @@
 import { useI18n } from "@/i18n/use-i18n";
-import { motion } from "framer-motion";
-
 
 const Querschnitt = () => {
   const { c } = useI18n();
-  const categories = c.toolbox.categories;
 
   return (
-    <section id="skills" className="py-32 relative">
-      <div className="container px-6 lg:px-12">
-        <div className="max-w-4xl mx-auto">
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
-          >
-            {c.toolbox.kicker}
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic mb-16"
-          >
-            {c.toolbox.title}
-          </motion.h2>
+    <section id="skills" className="py-8.8">
+      <div className="container px-5.5">
+        <div className="flex items-center gap-4.4 flex-wrap mb-2.2">
+          <span className="font-mono text-xs tracking-widest uppercase text-ink-3">{c.toolbox.kicker}</span>
+          <span className="flex-1 min-w-10 h-1.5 bg-chrome border-y border-chrome-dk" />
+        </div>
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl mb-5.5">{c.toolbox.title}</h2>
 
-          <div className="space-y-8">
-            {categories.map((category, index) => (
-              <motion.div
-                key={category.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex flex-col sm:flex-row sm:gap-8"
-              >
-                <h3 className="font-body text-xs tracking-[0.2em] uppercase text-primary w-28 flex-shrink-0 mb-2 sm:mb-0 sm:pt-0.5">
-                  {category.title}
-                </h3>
-                <p className="font-body text-sm text-foreground/80 leading-relaxed">
-                  {category.items}
-                </p>
-              </motion.div>
-            ))}
+        <div className="border-3 border-ink rounded-panel bg-cream-2 overflow-hidden">
+          <div className="bg-ink text-cream px-4.4 py-3.3 font-mono text-xs tracking-widest uppercase">
+            {c.toolbox.sides}
           </div>
+          <dl className="m-0">
+            {c.toolbox.categories.map((category) => (
+              <div
+                key={category.title}
+                className="grid md:grid-cols-[150px_minmax(0,1fr)] border-b border-ink/20 last:border-b-0"
+              >
+                <dt className="min-w-0 break-words font-mono text-[11px] font-bold uppercase tracking-wider text-cherry-dk px-4.4 pt-3.3 pb-0.5 md:py-3.3 md:border-r md:border-ink/20 md:bg-cream-3">
+                  {category.title}
+                </dt>
+                <dd className="min-w-0 break-words m-0 px-4.4 pb-3.3 md:py-3.3 font-body text-sm text-ink-2 leading-relaxed">
+                  {category.items}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </section>
