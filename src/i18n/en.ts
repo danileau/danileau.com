@@ -15,6 +15,7 @@ export const en = {
     work: "Proof of Work",
     toolkit: "Toolkit",
     education: "Education",
+    notes: "Notes",
     contact: "Get in touch",
   },
 
@@ -166,9 +167,19 @@ export const en = {
     ],
   },
 
+  notes: {
+    kicker: "Written down",
+    title: "Notes",
+    note: "Occasional pieces about decisions I made and what they cost. No schedule, no newsletter.",
+    back: "Back to the site",
+    read: "Read it",
+    backToNotes: "All notes",
+  },
+
   footer: {
     quote: "It is possible — even when everything around you is screaming and will not stop.",
     blurb: "System architect, engineer and musician. Trumpet in classical orchestras and jazz big bands, snowboard in winter, code all year.",
+    notes: "Notes",
     contact: "Contact",
     location: "Bern, Switzerland",
     links: "Links",

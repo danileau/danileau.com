@@ -17,6 +17,7 @@ export const de: Content = {
     work: "Proof of Work",
     toolkit: "Querschnitt",
     education: "Bildung",
+    notes: "Notizen",
     contact: "Kontakt aufnehmen",
   },
 
@@ -168,9 +169,19 @@ export const de: Content = {
     ],
   },
 
+  notes: {
+    kicker: "Aufgeschrieben",
+    title: "Notizen",
+    note: "Gelegentliche Texte über Entscheidungen und darüber, was sie gekostet haben. Kein Rhythmus, kein Newsletter.",
+    back: "Zurück zur Seite",
+    read: "Lesen",
+    backToNotes: "Alle Notizen",
+  },
+
   footer: {
     quote: "Es ist möglich — auch wenn alles um dich herum schreit und nicht aufhört.",
     blurb: "System Architect, Engineer und Musiker. Trompete in Orchestern und Jazz-Bigbands, Snowboard im Winter, Code das ganze Jahr.",
+    notes: "Notizen",
     contact: "Kontakt",
     location: "Bern, Schweiz",
     links: "Links",

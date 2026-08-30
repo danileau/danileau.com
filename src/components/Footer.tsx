@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Mail, MapPin, Github as GithubIcon } from "lucide-react";
 import { useI18n } from "@/i18n/use-i18n";
 
@@ -73,9 +74,9 @@ const Footer = () => {
           <div className="mt-6.6 pt-4.4 border-t border-ink/20 flex justify-between gap-3.3 flex-wrap font-mono text-[11px] text-ink-3">
             <span>&copy; {currentYear} Danilo Alessio Licitra. {c.footer.rights}</span>
             <nav className="flex gap-4.4">
-              <a href="#weg" className="hover:text-cherry-dk transition-colors">{c.nav.path}</a>
-              <a href="#work" className="hover:text-cherry-dk transition-colors">{c.nav.work}</a>
-              <a href="#education" className="hover:text-cherry-dk transition-colors">{c.nav.education}</a>
+              <a href="/#weg" className="hover:text-cherry-dk transition-colors">{c.nav.path}</a>
+              <a href="/#work" className="hover:text-cherry-dk transition-colors">{c.nav.work}</a>
+              <Link to="/notes" className="hover:text-cherry-dk transition-colors">{c.nav.notes}</Link>
             </nav>
           </div>
         </div>

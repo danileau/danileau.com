@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { LogoIcon, Wordmark } from "@/components/Logo";
 import { useI18n } from "@/i18n/use-i18n";
@@ -9,10 +10,11 @@ const Navigation = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const navLinks = [
-    { label: c.nav.path, href: "#weg" },
-    { label: c.nav.work, href: "#work" },
-    { label: c.nav.toolkit, href: "#skills" },
-    { label: c.nav.education, href: "#education" },
+    { label: c.nav.path, href: "/#weg" },
+    { label: c.nav.work, href: "/#work" },
+    { label: c.nav.toolkit, href: "/#skills" },
+    { label: c.nav.education, href: "/#education" },
+    { label: c.nav.notes, href: "/notes", route: true },
   ];
 
   useEffect(() => {
@@ -36,13 +38,23 @@ const Navigation = () => {
 
             <div className="hidden md:flex items-center gap-0.5">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="font-mono text-xs tracking-wider uppercase text-ink-2 px-2.5 py-1.5 rounded-chip hover:bg-cream-3 transition-colors"
-                >
-                  {link.label}
-                </a>
+                link.route ? (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="font-mono text-xs tracking-wider uppercase text-cherry-dk px-2.5 py-1.5 rounded-chip hover:bg-cream-3 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="font-mono text-xs tracking-wider uppercase text-ink-2 px-2.5 py-1.5 rounded-chip hover:bg-cream-3 transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
               <button
                 onClick={toggle}
@@ -96,16 +108,27 @@ const Navigation = () => {
               </button>
 
               <nav className="flex flex-col gap-3.3">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMobileOpen(false)}
-                    className="font-display text-2xl sm:text-3xl text-ink hover:text-cherry-dk transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {navLinks.map((link) =>
+                  link.route ? (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="font-display text-2xl sm:text-3xl text-cherry-dk transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="font-display text-2xl sm:text-3xl text-ink hover:text-cherry-dk transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ),
+                )}
                 <a
                   href="mailto:main@danileau.com"
                   className="stamp mt-4.4 inline-flex w-fit px-5.5 py-3.3 border-3 border-ink rounded-chip bg-cherry-dk text-cream font-body font-bold text-xs tracking-widest uppercase"
