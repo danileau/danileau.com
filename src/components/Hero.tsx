@@ -1,5 +1,4 @@
 import { ArrowDown, Mail } from "lucide-react";
-import profile from "@/assets/profile.png";
 import { careerYears } from "@/lib/facts";
 import { useI18n, t } from "@/i18n/use-i18n";
 
@@ -54,11 +53,6 @@ const Hero = () => {
 
             {/* The plaque on the counter. */}
             <div className="shadow-stamp-lg border-3 border-ink rounded-panel bg-porcelain p-5.5 text-center">
-              <img
-                src={profile}
-                alt="Danilo Alessio Licitra"
-                className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-full border-3 border-ink mx-auto mb-4.4"
-              />
               <span className="font-display text-6xl text-cherry leading-none tabular-nums block">
                 {years}
               </span>
