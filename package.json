@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && cp .htaccess dist/.htaccess",
+    "build": "node scripts/stats.mjs && vite build && cp .htaccess dist/.htaccess",
     "build:dev": "vite build --mode development",
+    "stats": "node scripts/stats.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "deploy": "./deploy.sh"
