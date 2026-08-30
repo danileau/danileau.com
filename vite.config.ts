@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { notesPlugin } from "./scripts/notes-plugin.mjs";
 
 // https://vitejs.dev/config/
 /** Fills %CAREER_YEARS% in index.html so the meta tags age with the site. */
@@ -20,7 +21,7 @@ export default defineConfig(() => ({
       overlay: false,
     },
   },
-  plugins: [react(), htmlFacts()],
+  plugins: [react(), htmlFacts(), notesPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

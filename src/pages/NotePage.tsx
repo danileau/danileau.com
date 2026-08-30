@@ -23,10 +23,10 @@ const NotePage = () => {
   if (!note) return <Navigate to="/notes" replace />;
 
   return (
-    <div className="min-h-screen bg-background text-foreground plate">
+    <div className="min-h-screen flex flex-col bg-background text-foreground plate">
       <Navigation />
 
-      <main className="container px-5.5 py-8.8">
+      <main className="container px-5.5 py-8.8 flex-1 w-full">
         <div className="max-w-[92ch] mx-auto">
         <Link
           to="/notes"

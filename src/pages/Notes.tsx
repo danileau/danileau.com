@@ -10,10 +10,10 @@ const Notes = () => {
   const notes = useNotes();
 
   return (
-    <div className="min-h-screen bg-background text-foreground plate">
+    <div className="min-h-screen flex flex-col bg-background text-foreground plate">
       <Navigation />
 
-      <main className="container px-5.5 py-8.8">
+      <main className="container px-5.5 py-8.8 flex-1 w-full">
         <Link
           to="/"
           className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-ink-2 hover:text-cherry-dk transition-colors mb-5.5"

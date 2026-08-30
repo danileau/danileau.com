@@ -1,6 +1,5 @@
 import { useI18n } from "@/i18n/use-i18n";
-import { notesEn } from "./notes.en";
-import { notesDe } from "./notes.de";
+import { notesEn, notesDe } from "virtual:notes";
 import type { Note } from "./notes";
 
 /** The slug is language-independent, so toggling the language on a note keeps
