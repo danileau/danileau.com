@@ -27,7 +27,7 @@ const NotePage = () => {
       <Navigation />
 
       <main className="container px-5.5 py-8.8">
-        <div className="max-w-[70ch] mx-auto">
+        <div className="max-w-[92ch] mx-auto">
         <Link
           to="/notes"
           className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-ink-2 hover:text-cherry-dk transition-colors mb-5.5"
