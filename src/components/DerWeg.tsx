@@ -1,50 +1,53 @@
 import { motion } from "framer-motion";
 import { Code, Settings, Server, Building2 } from "lucide-react";
+import { careerYears } from "@/lib/facts";
 
 const phases = [
   {
     number: "01",
     title: "Development",
-    subtitle: "Das Fundament",
+    subtitle: "The Foundation",
     period: "2008 – 2015",
     description:
-      "Mit 16 als Lehrling bei BIT angefangen. PHP, Symfony, MySQL — Webapplikationen in der Bundesverwaltung und in der Privatwirtschaft. Wer seinen eigenen Code in Produktion sieht, lernt schnell, was \"fertig\" wirklich heisst.",
+      "Started at BIT at sixteen, as an apprentice. PHP, Symfony, MySQL — web applications for the federal administration and in the private sector. Seeing your own code in production teaches you quickly what \"finished\" actually means.",
     icon: Code,
     color: "from-blue-500/20 to-blue-600/5",
   },
   {
     number: "02",
     title: "Engineering",
-    subtitle: "Das Werkzeug",
+    subtitle: "The Tooling",
     period: "2015 – 2021",
     description:
-      "Docker, Kubernetes, OpenShift, Tekton, ArgoCD, Helm. CI/CD-Pipelines gebaut, nicht nur genutzt. DefectDojo mit SAST als Security-Baseline etabliert.",
+      "Docker, Kubernetes, OpenShift, Tekton, ArgoCD, Helm. CI/CD pipelines built, not merely used. DefectDojo with SAST established as a security baseline.",
     icon: Settings,
     color: "from-emerald-500/20 to-emerald-600/5",
   },
   {
     number: "03",
     title: "Operations",
-    subtitle: "Die Realität",
+    subtitle: "The Reality",
     period: "2015 – 2021",
     description:
-      "Parallel zum Engineering: 6 Jahre Betrieb bei BIT. Apache, Tomcat, WSO2, Linux. Pikett. SwissCovid in 7 Wochen live. Wenn die Architektur um 3 Uhr nachts hält, war sie gut.",
+      "Alongside engineering: six years of operations at BIT. Apache, Tomcat, WSO2, Linux. On-call. If the architecture holds at 3 a.m., it was good.",
     icon: Server,
     color: "from-amber-500/20 to-amber-600/5",
   },
   {
     number: "04",
     title: "Architecture",
-    subtitle: "Das Gesamtbild",
-    period: "2021 – Aktuell",
+    subtitle: "The Whole Picture",
+    period: "2021 – present",
     description:
-      "Lösungen und Systeme entwerfen, die funktionieren — und die Governance respektieren. TOGAF, ArchiMate, BPMN, SAFe, HERMES sind dabei Mittel, nicht Zweck.",
+      "Designing solutions and systems that work — and that respect governance. TOGAF, ArchiMate, BPMN, SAFe and HERMES are means here, not ends.",
     icon: Building2,
     color: "from-primary/20 to-primary/5",
   },
 ];
 
 const DerWeg = () => {
+  const years = careerYears();
+
   return (
     <section id="weg" className="py-32 relative overflow-hidden">
       <div className="absolute top-1/4 right-0 w-1/3 h-96 bg-primary/5 blur-[120px] rounded-full" />
@@ -59,7 +62,7 @@ const DerWeg = () => {
               viewport={{ once: true }}
               className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
             >
-              Vom Code zur Architektur
+              From code to architecture
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -67,7 +70,7 @@ const DerWeg = () => {
               viewport={{ once: true }}
               className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic"
             >
-              Der Weg
+              The Path
             </motion.h2>
           </div>
           <motion.span
@@ -76,7 +79,7 @@ const DerWeg = () => {
             viewport={{ once: true }}
             className="hidden md:block font-display text-8xl text-muted/50"
           >
-            16+
+            {years}
           </motion.span>
         </div>
 

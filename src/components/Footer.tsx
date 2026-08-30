@@ -18,7 +18,7 @@ const Footer = () => {
           className="max-w-2xl mx-auto text-center mb-16"
         >
           <p className="font-display text-xl sm:text-2xl md:text-3xl italic text-foreground/80 leading-relaxed">
-            "Es ist möglich — auch wenn alles um dich herum schreit und nicht aufhört."
+            "It is possible — even when everything around you is screaming and will not stop."
           </p>
         </motion.div>
 
@@ -33,9 +33,9 @@ const Footer = () => {
               <span className="text-gradient italic">Danilo</span> Licitra
             </h3>
             <p className="font-body text-muted-foreground text-sm leading-relaxed max-w-xs">
-              System Architect, Engineer und Musiker.
-              Trompete in Orchestern und Jazz-Bigbands,
-              Snowboard im Winter, Code das ganze Jahr.
+              System architect, engineer and musician.
+              Trumpet in classical orchestras and jazz big bands,
+              snowboard in winter, code all year.
             </p>
           </motion.div>
 
@@ -46,7 +46,7 @@ const Footer = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            <h4 className="font-body text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">Kontakt</h4>
+            <h4 className="font-body text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">Contact</h4>
             <div className="space-y-4">
               <a
                 href="mailto:main@danileau.com"
@@ -57,7 +57,7 @@ const Footer = () => {
               </a>
               <div className="flex items-center gap-3 font-body text-muted-foreground">
                 <MapPin className="w-4 h-4" />
-                Schweiz
+                Bern, Switzerland
               </div>
             </div>
           </motion.div>
@@ -87,17 +87,17 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
           <p className="font-body text-xs text-muted-foreground">
-            &copy; {currentYear} Danilo Alessio Licitra. Alle Rechte vorbehalten.
+            &copy; {currentYear} Danilo Alessio Licitra. All rights reserved.
           </p>
           <nav className="flex gap-6">
             <a href="#weg" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
-              Der Weg
+              The Path
             </a>
             <a href="#work" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
-              Projekte
+              Proof of Work
             </a>
             <a href="#education" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
-              Bildung
+              Education
             </a>
           </nav>
         </div>

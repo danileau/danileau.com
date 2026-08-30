@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 
 const categories = [
   {
-    title: "Methoden",
-    items: "TOGAF ABB/SBB · ArchiMate 3.2 · BPMN 2.0 · UML 2.5 · SAFe · HERMES",
+    title: "Methods",
+    items: "TOGAF ABB/SBB · ArchiMate 3.2 · BPMN 2.0 · UML 2.5 · SAFe (10+ yrs) · HERMES (16 yrs)",
   },
   {
     title: "Security",
@@ -15,11 +15,11 @@ const categories = [
   },
   {
     title: "IoT",
-    items: "ESP32 · Arduino · MQTT · Sensorik · 3D-Printing",
+    items: "ESP32 · Arduino · MQTT · sensors · 3D printing",
   },
   {
-    title: "Sprachen",
-    items: "Deutsch (Muttersprache) · Italiano (madrelingua, auch zum Fluchen — skaliert besser) · English (C2) · Français (Grundlagen)",
+    title: "Languages",
+    items: "German (native) · Italiano (madrelingua — also for swearing, it scales better) · English (C2) · Français (basics)",
   },
 ];
 
@@ -34,7 +34,7 @@ const Querschnitt = () => {
             viewport={{ once: true }}
             className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
           >
-            Querschnitt
+            Cross-section
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -42,7 +42,7 @@ const Querschnitt = () => {
             viewport={{ once: true }}
             className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic mb-16"
           >
-            Werkzeugkasten
+            The Toolbox
           </motion.h2>
 
           <div className="space-y-8">

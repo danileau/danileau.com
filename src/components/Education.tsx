@@ -3,16 +3,16 @@ import { Award, GraduationCap } from "lucide-react";
 
 const education = [
   {
-    degree: "Dipl. Techniker Informatik HF",
-    institution: "Telekommunikationsschule Bern – TSBE",
+    degree: "Dipl. Techniker HF, Computer Science",
+    institution: "Telekommunikationsschule Bern — TSBE",
     period: "2017 – 2019",
     grade: "5.37",
-    award: "SOHARD Preis",
+    award: "SOHARD Prize",
     icon: Award
   },
   {
     degree: "Informatiker EFZ",
-    institution: "BIT – Schwerpunkt Applikationsentwicklung",
+    institution: "BIT — application development",
     period: "2008 – 2012",
     grade: "5",
     icon: GraduationCap
@@ -35,7 +35,7 @@ const Education = () => {
               viewport={{ once: true }}
               className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
             >
-              Akademischer Werdegang
+              Academic record
             </motion.p>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
@@ -43,7 +43,7 @@ const Education = () => {
               viewport={{ once: true }}
               className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic mb-8"
             >
-              Bildung
+              Education
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -52,9 +52,8 @@ const Education = () => {
               transition={{ delay: 0.1 }}
               className="font-body text-muted-foreground leading-relaxed"
             >
-              Fundierte technische Ausbildung mit Auszeichnung. 
-              Von der Applikationsentwicklung zur Systemarchitektur – 
-              eine kontinuierliche Reise des Lernens.
+              Both part-time alongside the job, both with distinction —
+              from application development to systems architecture.
             </motion.p>
           </div>
 
@@ -80,7 +79,7 @@ const Education = () => {
                     
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <span className="font-body text-xs text-muted-foreground uppercase tracking-wide">Note</span>
+                        <span className="font-body text-xs text-muted-foreground uppercase tracking-wide">Grade</span>
                         <span className="font-display text-2xl text-primary">{edu.grade}</span>
                       </div>
                       {edu.award && (

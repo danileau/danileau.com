@@ -1,8 +1,11 @@
 import { ArrowDown, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import profile from "@/assets/profile.png";
+import { careerYears } from "@/lib/facts";
 
 const Hero = () => {
+  const years = careerYears();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Ambient glow */}
@@ -46,7 +49,7 @@ const Hero = () => {
               transition={{ duration: 0.6 }}
               className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-6"
             >
-              Gebaut. Betrieben. Entworfen.
+              Built. Operated. Designed.
             </motion.p>
 
             {/* Name */}
@@ -70,9 +73,9 @@ const Hero = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="font-body text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mb-12"
             >
-              Seit 16+ Jahren durch alle Schichten — <span className="text-foreground">vom ersten Commit bis zum Incident um 3 Uhr nachts.</span>
-              {" "}Wer's gebaut, betrieben und gepatcht hat, zeichnet keine Luftschlösser.
-              <span className="text-foreground italic"> Peak Dunning-Kruger war beim ersten Git-Push.</span>
+              {years} years through every layer — <span className="text-foreground">from the first commit to the incident at 3 a.m.</span>
+              {" "}Anyone who has built it, run it and patched it doesn't draw castles in the air.
+              <span className="text-foreground italic"> Peak Dunning-Kruger was the first git push.</span>
             </motion.p>
 
             {/* CTA */}
@@ -87,13 +90,13 @@ const Hero = () => {
                 className="group inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 py-3 md:px-8 md:py-4 font-body font-medium tracking-wide hover:bg-primary/90 transition-all duration-300 w-full sm:w-auto"
               >
                 <Mail className="w-5 h-5" />
-                Kontakt
+                Get in touch
               </a>
               <a
                 href="#work"
                 className="inline-flex items-center justify-center gap-3 border border-border text-foreground px-6 py-3 md:px-8 md:py-4 font-body font-medium tracking-wide hover:border-primary hover:text-primary transition-all duration-300 w-full sm:w-auto"
               >
-                Projekte ansehen
+                See the work
                 <ArrowDown className="w-5 h-5" />
               </a>
             </motion.div>

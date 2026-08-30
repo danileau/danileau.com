@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { LogoIcon, Wordmark } from "@/components/Logo";
 
 const navLinks = [
-  { label: "Der Weg", href: "#weg" },
-  { label: "Projekte", href: "#work" },
-  { label: "Skills", href: "#skills" },
-  { label: "Bildung", href: "#education" },
+  { label: "The Path", href: "#weg" },
+  { label: "Proof of Work", href: "#work" },
+  { label: "Toolkit", href: "#skills" },
+  { label: "Education", href: "#education" },
 ];
 
 const Navigation = () => {
@@ -34,6 +35,9 @@ const Navigation = () => {
         <div className="container px-6 lg:px-12">
           <nav className="flex items-center justify-between h-20">
             {/* Desktop nav */}
+            <a href="#" className="hidden md:flex items-center" aria-label="Danileau — top of page">
+              <Wordmark />
+            </a>
             <div className="hidden md:flex items-center gap-8">
               {navLinks.map((link) => (
                 <a
@@ -50,7 +54,8 @@ const Navigation = () => {
             {/* Mobile toggle */}
             <button
               onClick={() => setIsMobileOpen(true)}
-              className="md:hidden w-10 h-10 flex items-center justify-center text-foreground"
+              aria-label="Open menu"
+              className="md:hidden w-10 h-10 flex items-center justify-center text-foreground ml-auto"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -69,12 +74,12 @@ const Navigation = () => {
           >
             <div className="container px-6 py-6 pb-20">
               <div className="flex items-center justify-between mb-12">
-                <a href="#" className="font-display text-2xl">
-                  <span className="text-gradient italic">D</span>
-                  <span className="text-foreground">L</span>
+                <a href="#" aria-label="Danileau — top of page">
+                  <LogoIcon size={34} />
                 </a>
                 <button
                   onClick={() => setIsMobileOpen(false)}
+                  aria-label="Close menu"
                   className="w-10 h-10 flex items-center justify-center text-foreground"
                 >
                   <X className="w-5 h-5" />
@@ -102,7 +107,7 @@ const Navigation = () => {
                   transition={{ delay: 0.4 }}
                   className="mt-6 inline-flex w-full sm:w-fit px-6 py-3 md:px-8 md:py-4 bg-primary text-primary-foreground font-body justify-center"
                 >
-                  Kontakt aufnehmen
+                  Get in touch
                 </motion.a>
               </nav>
             </div>
