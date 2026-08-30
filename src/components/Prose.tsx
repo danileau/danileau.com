@@ -17,15 +17,13 @@ const inline = (text: string): ReactNode[] =>
     return <Fragment key={i}>{part}</Fragment>;
   });
 
-const MEASURE = "max-w-[66ch]";
-
 export const Prose = ({ blocks }: { blocks: Block[] }) => (
   <div>
     {blocks.map((block, i) => {
       switch (block.t) {
         case "h2":
           return (
-            <h2 key={i} className={`${MEASURE} mt-8.8 mb-3.3`}>
+            <h2 key={i} className="mt-8.8 mb-3.3">
               <span className="block font-mono text-[11px] tracking-widest uppercase text-cherry-dk mb-2.2">
                 {block.num}
               </span>
@@ -35,7 +33,7 @@ export const Prose = ({ blocks }: { blocks: Block[] }) => (
 
         case "p":
           return (
-            <p key={i} className={`${MEASURE} font-body text-ink-2 leading-relaxed mb-4.4`}>
+            <p key={i} className="font-body text-ink-2 leading-relaxed mb-4.4">
               {inline(block.text)}
             </p>
           );
@@ -44,7 +42,7 @@ export const Prose = ({ blocks }: { blocks: Block[] }) => (
           return (
             <blockquote
               key={i}
-              className="max-w-[52ch] my-5.5 pl-4.4 border-l-4 border-sun font-display text-lg sm:text-xl leading-snug text-ink"
+              className="my-5.5 pl-4.4 border-l-4 border-sun font-display text-lg sm:text-xl leading-snug text-ink"
             >
               {inline(block.text)}
             </blockquote>
@@ -69,7 +67,7 @@ export const Prose = ({ blocks }: { blocks: Block[] }) => (
               : "bg-mint-wash border-mint-dk";
           const label = block.tone === "warn" ? "text-cherry-dk" : "text-mint-dk";
           return (
-            <aside key={i} className={`max-w-[72ch] my-5.5 border-3 rounded-card px-4.4 py-4.4 ${tone}`}>
+            <aside key={i} className={`my-5.5 border-3 rounded-card px-4.4 py-4.4 ${tone}`}>
               <h3 className={`font-mono text-[11px] font-bold tracking-widest uppercase mb-3.3 ${label}`}>
                 {block.title}
               </h3>

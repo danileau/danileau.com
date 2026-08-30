@@ -27,6 +27,7 @@ const NotePage = () => {
       <Navigation />
 
       <main className="container px-5.5 py-8.8">
+        <div className="max-w-[70ch] mx-auto">
         <Link
           to="/notes"
           className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-ink-2 hover:text-cherry-dk transition-colors mb-5.5"
@@ -45,7 +46,7 @@ const NotePage = () => {
             <h1 className="font-script text-cherry-dk text-5xl sm:text-6xl lg:text-7xl leading-none mb-3.3">
               {note.title}
             </h1>
-            <p className="font-display text-lg sm:text-xl leading-snug max-w-[46ch]">{note.standfirst}</p>
+            <p className="font-display text-lg sm:text-xl leading-snug">{note.standfirst}</p>
             <div className="checker h-4 border-y-3 border-ink mt-5.5" />
           </header>
 
@@ -66,6 +67,7 @@ const NotePage = () => {
             </p>
           </footer>
         </article>
+        </div>
       </main>
 
       <Footer />
