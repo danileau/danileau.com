@@ -10,7 +10,7 @@
     "stats": "node scripts/stats.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "./deploy.sh"
+    "deploy": "./scripts/deploy-wizard.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
