@@ -1,109 +1,140 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-
-const navLinks = [
-  { label: "Der Weg", href: "#weg" },
-  { label: "Projekte", href: "#work" },
-  { label: "Skills", href: "#skills" },
-  { label: "Bildung", href: "#education" },
-];
+import { LogoIcon, Wordmark } from "@/components/Logo";
+import { useI18n } from "@/i18n/use-i18n";
 
 const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { c, lang, toggle } = useI18n();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const navLinks = [
+    { label: c.nav.path, href: "/#weg" },
+    { label: c.nav.work, href: "/#work" },
+    { label: c.nav.toolkit, href: "/#skills" },
+    { label: c.nav.education, href: "/#education" },
+    { label: c.nav.notes, href: "/notes", route: true },
+  ];
+
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    document.body.style.overflow = isMobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isMobileOpen]);
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-background/80 backdrop-blur-lg border-b border-border" : ""
-        }`}
-      >
-        <div className="container px-6 lg:px-12">
-          <nav className="flex items-center justify-between h-20">
-            {/* Desktop nav */}
-            <div className="hidden md:flex items-center gap-8">
+      {/* The chrome fascia above the counter. */}
+      <div className="h-3.5 bg-chrome layers border-b-3 border-ink" />
+
+      <header className="sticky top-0 z-50 bg-cream-2 border-b-3 border-ink">
+        <div className="container px-5.5">
+          <nav className="flex items-center gap-2.2 min-h-[56px] flex-wrap">
+            <a href="#" aria-label={c.nav.home} className="mr-auto">
+              <Wordmark />
+            </a>
+
+            <div className="hidden md:flex items-center gap-0.5">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="font-body text-sm text-muted-foreground hover:text-foreground transition-colors relative group"
-                >
-                  {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full" />
-                </a>
+                link.route ? (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="font-mono text-xs tracking-wider uppercase text-cherry-dk px-2.5 py-1.5 rounded-chip hover:bg-cream-3 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="font-mono text-xs tracking-wider uppercase text-ink-2 px-2.5 py-1.5 rounded-chip hover:bg-cream-3 transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
+              <button
+                onClick={toggle}
+                aria-label={c.switchTo}
+                title={c.switchTo}
+                className="ml-2 font-mono text-xs tracking-wider uppercase text-ink px-3 py-1.5 rounded-chip border-2 border-ink bg-porcelain hover:bg-sun transition-colors"
+              >
+                {lang === "en" ? "DE" : "EN"}
+              </button>
             </div>
 
-            {/* Mobile toggle */}
             <button
               onClick={() => setIsMobileOpen(true)}
-              className="md:hidden w-10 h-10 flex items-center justify-center text-foreground"
+              aria-label={c.nav.openMenu}
+              className="md:hidden w-10 h-10 flex items-center justify-center text-ink"
             >
               <Menu className="w-5 h-5" />
             </button>
           </nav>
         </div>
-      </motion.header>
+      </header>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-background md:hidden"
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-50 bg-cream plate md:hidden overflow-y-auto"
           >
-            <div className="container px-6 py-6 pb-20">
-              <div className="flex items-center justify-between mb-12">
-                <a href="#" className="font-display text-2xl">
-                  <span className="text-gradient italic">D</span>
-                  <span className="text-foreground">L</span>
+            <div className="container px-5.5 py-5.5">
+              <div className="flex items-center justify-between mb-8.8">
+                <a href="#" aria-label={c.nav.home} onClick={() => setIsMobileOpen(false)}>
+                  <LogoIcon size={38} />
                 </a>
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  className="w-10 h-10 flex items-center justify-center text-foreground"
+                  aria-label={c.nav.closeMenu}
+                  className="w-10 h-10 flex items-center justify-center text-ink border-2 border-ink rounded-chip bg-porcelain"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <nav className="flex flex-col gap-6">
-                {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => setIsMobileOpen(false)}
-                    className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
-                <motion.a
+              <button
+                onClick={toggle}
+                className="stamp font-body font-bold text-xs tracking-widest uppercase px-4 py-2.5 border-3 border-ink rounded-chip bg-sun text-ink mb-6.6"
+              >
+                {c.switchTo}
+              </button>
+
+              <nav className="flex flex-col gap-3.3">
+                {navLinks.map((link) =>
+                  link.route ? (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="font-display text-2xl sm:text-3xl text-cherry-dk transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="font-display text-2xl sm:text-3xl text-ink hover:text-cherry-dk transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  ),
+                )}
+                <a
                   href="mailto:main@danileau.com"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="mt-6 inline-flex w-full sm:w-fit px-6 py-3 md:px-8 md:py-4 bg-primary text-primary-foreground font-body justify-center"
+                  className="stamp mt-4.4 inline-flex w-fit px-5.5 py-3.3 border-3 border-ink rounded-chip bg-cherry-dk text-cream font-body font-bold text-xs tracking-widest uppercase"
                 >
-                  Kontakt aufnehmen
-                </motion.a>
+                  {c.nav.contact}
+                </a>
               </nav>
             </div>
           </motion.div>

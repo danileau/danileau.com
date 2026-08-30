@@ -1,87 +1,81 @@
 import type { Config } from "tailwindcss";
 
+/** Every colour resolves to an HSL custom property from src/index.css, so the
+ *  slash-opacity modifiers (bg-cherry/10) keep working. */
+const hsl = (name: string) => `hsl(var(--${name}) / <alpha-value>)`;
+
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
-  prefix: "",
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      padding: "0",
+      screens: { "2xl": "1180px" },
     },
     extend: {
       fontFamily: {
-        display: ['Instrument Serif', 'Georgia', 'serif'],
-        body: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        script: ["Pacifico", "cursive"],
+        display: ["Alfa Slab One", "Georgia", "serif"],
+        body: ["Archivo", "system-ui", "sans-serif"],
+        mono: ["Courier Prime", "ui-monospace", "monospace"],
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
+        cream: hsl("cream"),
+        "cream-2": hsl("cream-2"),
+        "cream-3": hsl("cream-3"),
+        porcelain: hsl("porcelain"),
+        ink: hsl("ink"),
+        "ink-2": hsl("ink-2"),
+        "ink-3": hsl("ink-3"),
+        cherry: hsl("cherry"),
+        "cherry-dk": hsl("cherry-dk"),
+        "cherry-wash": hsl("cherry-wash"),
+        aqua: hsl("aqua"),
+        "aqua-dk": hsl("aqua-dk"),
+        "aqua-wash": hsl("aqua-wash"),
+        sun: hsl("sun"),
+        "sun-dk": hsl("sun-dk"),
+        "sun-wash": hsl("sun-wash"),
+        mint: hsl("mint"),
+        "mint-dk": hsl("mint-dk"),
+        "mint-wash": hsl("mint-wash"),
+        chrome: hsl("chrome"),
+        "chrome-dk": hsl("chrome-dk"),
+
+        background: hsl("background"),
+        foreground: hsl("foreground"),
+        card: hsl("card"),
+        primary: hsl("primary"),
+        "primary-foreground": hsl("primary-foreground"),
+        muted: hsl("muted"),
+        "muted-foreground": hsl("muted-foreground"),
+        accent: hsl("accent"),
+        border: hsl("border"),
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        chip: "999px",
+        card: "12px",
+        panel: "16px",
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
+      borderWidth: {
+        3: "3px",
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+      spacing: {
+        /* the handoff's 4.4px base; it worked */
+        1.1: "4.4px",
+        2.2: "8.8px",
+        3.3: "13.2px",
+        4.4: "17.6px",
+        5.5: "22px",
+        6.6: "26.4px",
+        8.8: "35.2px",
+      },
+      boxShadow: {
+        stamp: "3px 3px 0 hsl(var(--ink))",
+        "stamp-lg": "5px 5px 0 hsl(var(--ink))",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [],
 } satisfies Config;
