@@ -31,6 +31,11 @@
 #   ./scripts/deploy-wizard.sh --status     # read-only
 #   ./scripts/deploy-wizard.sh --rollback   # pick an older release
 #   ./scripts/deploy-wizard.sh --keep 10    # how many releases to retain
+#   ./scripts/deploy-wizard.sh --yes        # answer y to every prompt
+#
+# --yes is for a run that nobody is watching. It skips the questions, not the
+# checks: the upload is still verified on the host and a release that does not
+# serve is still rolled back.
 
 set -euo pipefail
 
@@ -45,6 +50,10 @@ else
   B=""; DIM=""; R=""; RED=""; GRN=""; YLW=""; CYN=""
 fi
 die()  { echo "${RED}✗ $*${R}" >&2; exit 1; }
+ask() { # ask "prompt" -> 0 for yes
+  if [ "${ASSUME_YES:-0}" = "1" ]; then echo "$1 ${DIM}(--yes)${R}"; return 0; fi
+  local reply; read -rp "$1 [y/N] " reply; [ "$reply" = "y" ]
+}
 ok()   { echo "${GRN}✓${R} $*"; }
 warn() { echo "${YLW}!${R} $*"; }
 step() { echo; echo "${B}$*${R}"; }
@@ -53,11 +62,13 @@ hr()   { printf '%s\n' "${DIM}────────────────�
 # ----- args -----------------------------------------------------------------
 MODE="deploy"
 KEEP=""
+ASSUME_YES=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --status)   MODE="status"; shift ;;
     --rollback) MODE="rollback"; shift ;;
     --keep)     KEEP="${2:?--keep needs a number}"; shift 2 ;;
+    --yes|-y)   ASSUME_YES=1; shift ;;
     -h|--help)  sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) die "unknown argument: $1" ;;
   esac
@@ -175,8 +186,7 @@ if [ "$MODE" = "rollback" ]; then
   target="${rels[$((pick-1))]:-}"
   [ -n "$target" ] || die "no such entry"
   [ "$target" = "$cur" ] && die "that one is already live"
-  read -rp "Point $DEPLOY_URL at $target? [y/N] " a
-  [ "$a" = "y" ] || { echo "Left alone."; exit 0; }
+  if ! ask "Point $DEPLOY_URL at $target?"; then echo "Left alone."; exit 0; fi
   remote "ln -sfn '$DEPLOY_ROOT/releases/$target' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
   ok "$DEPLOY_LINK → $target"
   exit 0
@@ -201,8 +211,7 @@ if remote "[ -d '$DEPLOY_LINK' ] && [ ! -L '$DEPLOY_LINK' ]"; then
   warn "release. Copy it into dist/ (or public/) first if you want to keep it."
   echo
   echo "${DIM}The site is unreachable between the move and the link — well under a second.${R}"
-  read -rp "Adopt it and switch to a symlink? [y/N] " a
-  [ "$a" = "y" ] || { echo "Nothing changed."; exit 0; }
+  if ! ask "Adopt it and switch to a symlink?"; then echo "Nothing changed."; exit 0; fi
   remote "mkdir -p '$DEPLOY_ROOT/releases' && mv '$DEPLOY_LINK' '$DEPLOY_ROOT/releases/$ADOPTED' && ln -s '$DEPLOY_ROOT/releases/$ADOPTED' '$DEPLOY_LINK'"
   ok "adopted as $ADOPTED, and $DEPLOY_LINK is now a symlink"
   code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$DEPLOY_URL" || echo 000)"
@@ -214,8 +223,7 @@ show_status
 hr
 SHA="$(git -C "$ROOT" rev-parse --short HEAD)"
 if [ -n "$(git -C "$ROOT" status --porcelain -uno)" ]; then
-  read -rp "Tracked files are modified. Build and ship them anyway? [y/N] " a
-  [ "$a" = "y" ] || { echo "Nothing done."; exit 0; }
+  if ! ask "Tracked files are modified. Build and ship them anyway?"; then echo "Nothing done."; exit 0; fi
   SHA="$SHA-dirty"
 fi
 
@@ -233,8 +241,7 @@ ok "$(find "$ROOT/dist" -type f | wc -l | tr -d ' ') files, $(du -sh "$ROOT/dist
 # ----- 2. upload beside the live one, then verify ---------------------------
 step "2/3  Uploading to releases/$RELEASE"
 echo "${DIM}Nothing points at it yet, so a partial upload is unreachable.${R}"
-read -rp "Upload to $DEPLOY_HOST? [y/N] " a
-[ "$a" = "y" ] || { echo "Nothing uploaded."; exit 0; }
+if ! ask "Upload to $DEPLOY_HOST?"; then echo "Nothing uploaded."; exit 0; fi
 
 remote "mkdir -p '$DEPLOY_ROOT/releases/$RELEASE'"
 rsync -a --delete --checksum "$ROOT/dist/" "$DEPLOY_HOST:$DEPLOY_ROOT/releases/$RELEASE/"
@@ -254,8 +261,7 @@ ok "$(printf '%s\n' "$LOCAL_SUMS" | wc -l | tr -d ' ') files verified byte for b
 # ----- 3. switch, then prove it ---------------------------------------------
 PREVIOUS="$(live_release)"
 step "3/3  Switching"
-read -rp "Point $DEPLOY_URL at $RELEASE? [y/N] " a
-[ "$a" = "y" ] || { echo "Uploaded but not switched. It is at releases/$RELEASE."; exit 0; }
+if ! ask "Point $DEPLOY_URL at $RELEASE?"; then echo "Uploaded but not switched. It is at releases/$RELEASE."; exit 0; fi
 
 # mv -T on a symlink is atomic: no request ever sees a missing docroot.
 remote "ln -sfn '$DEPLOY_ROOT/releases/$RELEASE' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
@@ -289,8 +295,7 @@ OLD="$(list_releases | tail -n +$((KEEP+1)))"
 if [ -n "$OLD" ]; then
   echo
   echo "${DIM}Older than the last $KEEP:${R}"; echo "$OLD" | sed 's/^/  /'
-  read -rp "Remove them? [y/N] " a
-  if [ "$a" = "y" ]; then
+  if ask "Remove them?"; then
     echo "$OLD" | while read -r r; do
       [ -n "$r" ] && [ "$r" != "$RELEASE" ] && remote "rm -rf '$DEPLOY_ROOT/releases/$r'"
     done
