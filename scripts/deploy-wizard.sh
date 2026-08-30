@@ -70,11 +70,15 @@ if [ ! -f "$CONF" ]; then
 #
 # DEPLOY_HOST   ssh destination, as ssh would take it (user@host, or a Host
 #               alias out of ~/.ssh/config, which is the tidier option)
-# DEPLOY_ROOT   directory on the host that holds releases/ and the current
-#               symlink. Apache's DocumentRoot must point at $DEPLOY_ROOT/current
+# DEPLOY_ROOT   where releases are kept. It MUST sit outside the web root, or
+#               every past release is browsable at your own domain.
+# DEPLOY_LINK   the path the web server serves. On shared hosting you cannot
+#               edit a vhost, so this path itself becomes the symlink that gets
+#               swapped. It is what "deploying" actually means here.
 # DEPLOY_URL    the public URL, used to check the deployment actually landed
 DEPLOY_HOST="user@host.example"
-DEPLOY_ROOT="/var/www/danileau.com"
+DEPLOY_ROOT="/home/user/deploy/danileau.com"
+DEPLOY_LINK="/home/user/www/danileau.com"
 DEPLOY_URL="https://danileau.com"
 TEMPLATE
   echo "${YLW}Wrote a template to deploy.conf.${R}"
@@ -85,8 +89,17 @@ fi
 . "$CONF"
 : "${DEPLOY_HOST:?DEPLOY_HOST missing from deploy.conf}"
 : "${DEPLOY_ROOT:?DEPLOY_ROOT missing from deploy.conf}"
+: "${DEPLOY_LINK:?DEPLOY_LINK missing from deploy.conf}"
 : "${DEPLOY_URL:?DEPLOY_URL missing from deploy.conf}"
 [ "$DEPLOY_HOST" = "user@host.example" ] && die "deploy.conf still holds the template values"
+case "$DEPLOY_ROOT" in
+  "$DEPLOY_LINK"|"$DEPLOY_LINK"/*)
+    die "DEPLOY_ROOT sits inside DEPLOY_LINK. Every release would be reachable at $DEPLOY_URL. Move it outside the web root." ;;
+esac
+case "$DEPLOY_ROOT" in
+  */www/*|*/public_html/*|*/htdocs/*)
+    warn "DEPLOY_ROOT looks like it is under a web root — check that $DEPLOY_URL cannot serve $DEPLOY_ROOT/releases" ;;
+esac
 
 KEEP="${KEEP:-${DEPLOY_KEEP:-5}}"
 HEALTH_TIMEOUT="${DEPLOY_HEALTH_TIMEOUT:-60}"
@@ -98,7 +111,7 @@ ssh -o BatchMode=yes -o ConnectTimeout=8 "$DEPLOY_HOST" true 2>/dev/null \
 
 remote() { ssh -o BatchMode=yes "$DEPLOY_HOST" "$@"; }
 
-live_release()   { remote "readlink '$DEPLOY_ROOT/current' 2>/dev/null | xargs -r basename" || true; }
+live_release()   { remote "readlink '$DEPLOY_LINK' 2>/dev/null | xargs -r basename" || true; }
 list_releases()  { remote "ls -1 '$DEPLOY_ROOT/releases' 2>/dev/null | sort -r" || true; }
 live_stamp()     { curl -fsS --max-time 10 "$DEPLOY_URL/.build.json" 2>/dev/null || true; }
 
@@ -106,7 +119,13 @@ live_stamp()     { curl -fsS --max-time 10 "$DEPLOY_URL/.build.json" 2>/dev/null
 show_status() {
   step "On $DEPLOY_HOST"
   local cur; cur="$(live_release)"
-  if [ -n "$cur" ]; then ok "current → ${CYN}$cur${R}"; else warn "no current symlink yet — nothing deployed"; fi
+  if [ -n "$cur" ]; then
+    ok "$DEPLOY_LINK → ${CYN}$cur${R}"
+  elif remote "[ -d '$DEPLOY_LINK' ] && [ ! -L '$DEPLOY_LINK' ]"; then
+    warn "$DEPLOY_LINK is a real directory, not a symlink — this host has never been deployed by the wizard"
+  else
+    warn "$DEPLOY_LINK does not exist yet"
+  fi
 
   local rels; rels="$(list_releases)"
   if [ -n "$rels" ]; then
@@ -122,11 +141,13 @@ show_status() {
 
   step "In this checkout"
   echo "  commit  $(git -C "$ROOT" rev-parse --short HEAD) on $(git -C "$ROOT" rev-parse --abbrev-ref HEAD)"
-  if [ -n "$(git -C "$ROOT" status --porcelain)" ]; then
-    warn "working tree is dirty — a deployment would ship uncommitted changes"
+  if [ -n "$(git -C "$ROOT" status --porcelain -uno)" ]; then
+    warn "tracked files are modified — a deployment would ship uncommitted changes"
   else
-    ok "working tree is clean"
+    ok "no uncommitted changes to tracked files"
   fi
+  local untracked; untracked="$(git -C "$ROOT" ls-files --others --exclude-standard | wc -l | tr -d ' ')"
+  [ "$untracked" != "0" ] && echo "  ${DIM}($untracked untracked file(s), which the build does not read)${R}"
 }
 
 if [ "$MODE" = "status" ]; then show_status; exit 0; fi
@@ -146,17 +167,44 @@ if [ "$MODE" = "rollback" ]; then
   [ "$target" = "$cur" ] && die "that one is already live"
   read -rp "Point $DEPLOY_URL at $target? [y/N] " a
   [ "$a" = "y" ] || { echo "Left alone."; exit 0; }
-  remote "ln -sfn '$DEPLOY_ROOT/releases/$target' '$DEPLOY_ROOT/current.tmp' && mv -Tf '$DEPLOY_ROOT/current.tmp' '$DEPLOY_ROOT/current'"
-  ok "current → $target"
+  remote "ln -sfn '$DEPLOY_ROOT/releases/$target' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
+  ok "$DEPLOY_LINK → $target"
   exit 0
+fi
+
+# ----- 0. first run: adopt whatever is already live -------------------------
+# A host that has never been deployed by this wizard has a real directory where
+# the symlink needs to be. Deleting it would throw away the only thing you could
+# roll back to, so it becomes the first release instead.
+if remote "[ -d '$DEPLOY_LINK' ] && [ ! -L '$DEPLOY_LINK' ]"; then
+  ADOPTED="adopted-$(date -u +%Y%m%d-%H%M%S)"
+  step "First run on this host"
+  echo "$DEPLOY_LINK is a real directory. To switch releases atomically it has to"
+  echo "become a symlink, so what is live now moves to:"
+  echo "  ${CYN}$DEPLOY_ROOT/releases/$ADOPTED${R}"
+  echo "and stays available to --rollback."
+  echo
+  echo "${DIM}What is in there today:${R}"
+  remote "ls -1 '$DEPLOY_LINK'" | sed 's/^/  /'
+  echo
+  warn "Anything above that 'npm run build' does not produce will NOT be in the next"
+  warn "release. Copy it into dist/ (or public/) first if you want to keep it."
+  echo
+  echo "${DIM}The site is unreachable between the move and the link — well under a second.${R}"
+  read -rp "Adopt it and switch to a symlink? [y/N] " a
+  [ "$a" = "y" ] || { echo "Nothing changed."; exit 0; }
+  remote "mkdir -p '$DEPLOY_ROOT/releases' && mv '$DEPLOY_LINK' '$DEPLOY_ROOT/releases/$ADOPTED' && ln -s '$DEPLOY_ROOT/releases/$ADOPTED' '$DEPLOY_LINK'"
+  ok "adopted as $ADOPTED, and $DEPLOY_LINK is now a symlink"
+  code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$DEPLOY_URL" || echo 000)"
+  [ "$code" = "200" ] && ok "$DEPLOY_URL still answers 200" || warn "$DEPLOY_URL answered $code — check before continuing"
 fi
 
 # ----- 1. which build -------------------------------------------------------
 show_status
 hr
 SHA="$(git -C "$ROOT" rev-parse --short HEAD)"
-if [ -n "$(git -C "$ROOT" status --porcelain)" ]; then
-  read -rp "The tree is dirty. Build and ship it anyway? [y/N] " a
+if [ -n "$(git -C "$ROOT" status --porcelain -uno)" ]; then
+  read -rp "Tracked files are modified. Build and ship them anyway? [y/N] " a
   [ "$a" = "y" ] || { echo "Nothing done."; exit 0; }
   SHA="$SHA-dirty"
 fi
@@ -198,8 +246,8 @@ read -rp "Point $DEPLOY_URL at $RELEASE? [y/N] " a
 [ "$a" = "y" ] || { echo "Uploaded but not switched. It is at releases/$RELEASE."; exit 0; }
 
 # mv -T on a symlink is atomic: no request ever sees a missing docroot.
-remote "ln -sfn '$DEPLOY_ROOT/releases/$RELEASE' '$DEPLOY_ROOT/current.tmp' && mv -Tf '$DEPLOY_ROOT/current.tmp' '$DEPLOY_ROOT/current'"
-ok "current → $RELEASE"
+remote "ln -sfn '$DEPLOY_ROOT/releases/$RELEASE' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
+ok "$DEPLOY_LINK → $RELEASE"
 
 echo -n "Checking $DEPLOY_URL "
 deadline=$(( $(date +%s) + HEALTH_TIMEOUT ))
@@ -218,7 +266,7 @@ if [ "$landed" -eq 1 ]; then
 else
   warn "the site is not serving $RELEASE within ${HEALTH_TIMEOUT}s"
   if [ -n "$PREVIOUS" ]; then
-    remote "ln -sfn '$DEPLOY_ROOT/releases/$PREVIOUS' '$DEPLOY_ROOT/current.tmp' && mv -Tf '$DEPLOY_ROOT/current.tmp' '$DEPLOY_ROOT/current'"
+    remote "ln -sfn '$DEPLOY_ROOT/releases/$PREVIOUS' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
     die "rolled back to $PREVIOUS. The bad release is still at releases/$RELEASE if you want to look at it."
   fi
   die "there is no previous release to roll back to. releases/$RELEASE is still in place."
