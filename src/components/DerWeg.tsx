@@ -1,52 +1,19 @@
 import { motion } from "framer-motion";
 import { Code, Settings, Server, Building2 } from "lucide-react";
 import { careerYears } from "@/lib/facts";
+import { useI18n } from "@/i18n/use-i18n";
 
-const phases = [
-  {
-    number: "01",
-    title: "Development",
-    subtitle: "The Foundation",
-    period: "2008 – 2015",
-    description:
-      "Started at BIT at sixteen, as an apprentice. PHP, Symfony, MySQL — web applications for the federal administration and in the private sector. Seeing your own code in production teaches you quickly what \"finished\" actually means.",
-    icon: Code,
-    color: "from-blue-500/20 to-blue-600/5",
-  },
-  {
-    number: "02",
-    title: "Engineering",
-    subtitle: "The Tooling",
-    period: "2015 – 2021",
-    description:
-      "Docker, Kubernetes, OpenShift, Tekton, ArgoCD, Helm. CI/CD pipelines built, not merely used. DefectDojo with SAST established as a security baseline.",
-    icon: Settings,
-    color: "from-emerald-500/20 to-emerald-600/5",
-  },
-  {
-    number: "03",
-    title: "Operations",
-    subtitle: "The Reality",
-    period: "2015 – 2021",
-    description:
-      "Alongside engineering: six years of operations at BIT. Apache, Tomcat, WSO2, Linux. On-call. If the architecture holds at 3 a.m., it was good.",
-    icon: Server,
-    color: "from-amber-500/20 to-amber-600/5",
-  },
-  {
-    number: "04",
-    title: "Architecture",
-    subtitle: "The Whole Picture",
-    period: "2021 – present",
-    description:
-      "Designing solutions and systems that work — and that respect governance. TOGAF, ArchiMate, BPMN, SAFe and HERMES are means here, not ends.",
-    icon: Building2,
-    color: "from-primary/20 to-primary/5",
-  },
+const META = [
+  { number: "01", title: "Development", icon: Code, color: "from-blue-500/20 to-blue-600/5" },
+  { number: "02", title: "Engineering", icon: Settings, color: "from-emerald-500/20 to-emerald-600/5" },
+  { number: "03", title: "Operations", icon: Server, color: "from-amber-500/20 to-amber-600/5" },
+  { number: "04", title: "Architecture", icon: Building2, color: "from-primary/20 to-primary/5" },
 ];
 
 const DerWeg = () => {
+  const { c } = useI18n();
   const years = careerYears();
+  const phases = META.map((m, i) => ({ ...m, ...c.path.phases[i] }));
 
   return (
     <section id="weg" className="py-32 relative overflow-hidden">
@@ -62,7 +29,7 @@ const DerWeg = () => {
               viewport={{ once: true }}
               className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
             >
-              From code to architecture
+              {c.path.kicker}
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -70,7 +37,7 @@ const DerWeg = () => {
               viewport={{ once: true }}
               className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic"
             >
-              The Path
+              {c.path.title}
             </motion.h2>
           </div>
           <motion.span

@@ -2,15 +2,16 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { LogoIcon, Wordmark } from "@/components/Logo";
-
-const navLinks = [
-  { label: "The Path", href: "#weg" },
-  { label: "Proof of Work", href: "#work" },
-  { label: "Toolkit", href: "#skills" },
-  { label: "Education", href: "#education" },
-];
+import { useI18n } from "@/i18n/use-i18n";
 
 const Navigation = () => {
+  const { c, lang, toggle } = useI18n();
+  const navLinks = [
+    { label: c.nav.path, href: "#weg" },
+    { label: c.nav.work, href: "#work" },
+    { label: c.nav.toolkit, href: "#skills" },
+    { label: c.nav.education, href: "#education" },
+  ];
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -35,7 +36,7 @@ const Navigation = () => {
         <div className="container px-6 lg:px-12">
           <nav className="flex items-center justify-between h-20">
             {/* Desktop nav */}
-            <a href="#" className="hidden md:flex items-center" aria-label="Danileau — top of page">
+            <a href="#" className="hidden md:flex items-center" aria-label={c.nav.home}>
               <Wordmark />
             </a>
             <div className="hidden md:flex items-center gap-8">
@@ -49,12 +50,20 @@ const Navigation = () => {
                   <span className="absolute bottom-0 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full" />
                 </a>
               ))}
+              <button
+                onClick={toggle}
+                aria-label={c.switchTo}
+                title={c.switchTo}
+                className="font-body text-xs tracking-[0.15em] text-muted-foreground hover:text-primary border border-border hover:border-primary px-2.5 py-1 transition-colors"
+              >
+                {lang === "en" ? "DE" : "EN"}
+              </button>
             </div>
 
             {/* Mobile toggle */}
             <button
               onClick={() => setIsMobileOpen(true)}
-              aria-label="Open menu"
+              aria-label={c.nav.openMenu}
               className="md:hidden w-10 h-10 flex items-center justify-center text-foreground ml-auto"
             >
               <Menu className="w-5 h-5" />
@@ -74,17 +83,24 @@ const Navigation = () => {
           >
             <div className="container px-6 py-6 pb-20">
               <div className="flex items-center justify-between mb-12">
-                <a href="#" aria-label="Danileau — top of page">
+                <a href="#" aria-label={c.nav.home}>
                   <LogoIcon size={34} />
                 </a>
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  aria-label="Close menu"
+                  aria-label={c.nav.closeMenu}
                   className="w-10 h-10 flex items-center justify-center text-foreground"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
+
+              <button
+                onClick={toggle}
+                className="self-start font-body text-sm tracking-[0.15em] text-muted-foreground hover:text-primary border border-border px-3 py-1.5 mb-8 transition-colors"
+              >
+                {c.switchTo}
+              </button>
 
               <nav className="flex flex-col gap-6">
                 {navLinks.map((link, index) => (
@@ -107,7 +123,7 @@ const Navigation = () => {
                   transition={{ delay: 0.4 }}
                   className="mt-6 inline-flex w-full sm:w-fit px-6 py-3 md:px-8 md:py-4 bg-primary text-primary-foreground font-body justify-center"
                 >
-                  Get in touch
+                  {c.nav.contact}
                 </motion.a>
               </nav>
             </div>

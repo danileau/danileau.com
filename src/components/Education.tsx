@@ -1,25 +1,18 @@
+import { useI18n } from "@/i18n/use-i18n";
 import { motion } from "framer-motion";
 import { Award, GraduationCap } from "lucide-react";
 
-const education = [
-  {
-    degree: "Dipl. Techniker HF, Computer Science",
-    institution: "Telekommunikationsschule Bern — TSBE",
-    period: "2017 – 2019",
-    grade: "5.37",
-    award: "SOHARD Prize",
-    icon: Award
-  },
-  {
-    degree: "Informatiker EFZ",
-    institution: "BIT — application development",
-    period: "2008 – 2012",
-    grade: "5",
-    icon: GraduationCap
-  }
-];
+const ICONS = [Award, GraduationCap];
+const GRADES = ["5.37", "5"];
 
 const Education = () => {
+  const { c } = useI18n();
+  const education = c.education.entries.map((e, i) => ({
+    ...e,
+    grade: GRADES[i],
+    icon: ICONS[i],
+  }));
+
   return (
     <section id="education" className="py-32 relative">
       {/* Decorative element */}
@@ -35,7 +28,7 @@ const Education = () => {
               viewport={{ once: true }}
               className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
             >
-              Academic record
+              {c.education.kicker}
             </motion.p>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
@@ -43,7 +36,7 @@ const Education = () => {
               viewport={{ once: true }}
               className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic mb-8"
             >
-              Education
+              {c.education.title}
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -52,8 +45,7 @@ const Education = () => {
               transition={{ delay: 0.1 }}
               className="font-body text-muted-foreground leading-relaxed"
             >
-              Both part-time alongside the job, both with distinction —
-              from application development to systems architecture.
+              {c.education.note}
             </motion.p>
           </div>
 
@@ -79,7 +71,7 @@ const Education = () => {
                     
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <span className="font-body text-xs text-muted-foreground uppercase tracking-wide">Grade</span>
+                        <span className="font-body text-xs text-muted-foreground uppercase tracking-wide">{c.education.grade}</span>
                         <span className="font-display text-2xl text-primary">{edu.grade}</span>
                       </div>
                       {edu.award && (

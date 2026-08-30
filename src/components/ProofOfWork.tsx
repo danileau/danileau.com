@@ -1,96 +1,34 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Shield, Server, Github, Database, ScanSearch, ShieldCheck, Printer } from "lucide-react";
+import { useI18n } from "@/i18n/use-i18n";
 
-const featured = {
+const FEATURED = {
   title: "ciphra",
-  subtitle: "Zero-knowledge health tracker — encrypted by design.",
-  facets: [
-    {
-      label: "Decision",
-      text: "Every key is derived in the browser. The server stores opaque blobs and cannot read health data — not under a court order, and not for me.",
-    },
-    {
-      label: "Price",
-      text: "A lost recovery code is a lost account. There is no reset. Anyone promising both safe and convenient is lying about one of them.",
-    },
-    {
-      label: "Surprise",
-      text: "A caregiver showed me that her three-minute evening check in a spreadsheet outperformed my form. Since then the benchmark is not the whitepaper — it is whatever that person would otherwise use.",
-    },
-  ],
   url: "https://ciphra.ch",
   repo: "https://github.com/danileau/ciphra",
   icon: Shield,
 };
 
-const fachprojekte = [
-  {
-    title: "Infrastruktur-Datenplattform",
-    description:
-      "Consolidates IT infrastructure data from a dozen sources into PostgreSQL and correlates it across app ID, IP, team and hostname. Cross-layer analysis, automated dependency detection, cloud-readiness assessment. Python/FastAPI, React.",
-    icon: Database,
-  },
-  {
-    title: "Repository-Analysator",
-    description:
-      "A CLI tool that detects the technology actually in use across code repositories — languages, frameworks, containers, IaC. Feeds the infrastructure platform. Python.",
-    icon: ScanSearch,
-  },
-  {
-    title: "SBOM- & Vulnerability-Analyse",
-    description:
-      "Analyses software bills of materials and container images for known vulnerabilities, wired into DefectDojo. Python/Bash.",
-    icon: ShieldCheck,
-  },
-];
+const PROFESSIONAL_ICONS = [Database, ScanSearch, ShieldCheck];
 
-type Facet = { label: string; text: string };
-
-const projects: {
-  title: string;
-  description?: string;
-  facets?: Facet[];
-  icon: typeof Shield;
-  url: string | false;
-}[] = [
-  {
-    title: "Pretty Please Print",
-    facets: [
-      {
-        label: "Decision",
-        text: "No public sign-up. An account cannot come into existence without an invitation — enforced in a single hook that every authentication method passes through.",
-      },
-      {
-        label: "Price",
-        text: "No multi-tenancy, no billing, no queue theory. Built for five people and one printer, and honest about it. AGPL, because the worry was reciprocity and not revenue.",
-      },
-      {
-        label: "Surprise",
-        text: "The restore procedure was written from reasoning, not from experience. The first real run — data destroyed in between, checked against a planted canary row — turned up three things that never surface in your head. Since then \"documented\" is not a status.",
-      },
-    ],
-    icon: Printer,
-    url: "https://github.com/danileau/prettypleaseprint",
-  },
-  {
-    title: "Homelab",
-    description:
-      "Bookstack, Plex, Manyfold, a plant monitor on ESP32/MQTT, Pixoo-REST. Anyone preaching operations should also live there.",
-    icon: Server,
-    url: false,
-  },
-];
-
-const otherWork = [
-  { title: "SwissCovid & Covid Certificate", description: "Build, operations, on-call — federal administration, 2020/21" },
-  { title: "epilepc.ch", description: "Seizure diary — HF thesis 2019, succeeded by ciphra" },
-  { title: "Les Ateliers", description: "Web shop, Bern" },
-  { title: "Couture Lui Luis", description: "Website & tools, Bern" },
-  { title: "Musikgesellschaft Bern-Bümpliz", description: "Website" },
-  { title: "Lulus Leckereien", description: "IT support & website" },
+const PERSONAL_META: { icon: typeof Shield; url: string | false }[] = [
+  { icon: Printer, url: "https://github.com/danileau/prettypleaseprint" },
+  { icon: Server, url: false },
 ];
 
 const ProofOfWork = () => {
+  const { c } = useI18n();
+  const featured = { ...FEATURED, ...c.work.featured };
+  const fachprojekte = c.work.professionalProjects.map((p, i) => ({
+    ...p,
+    icon: PROFESSIONAL_ICONS[i],
+  }));
+  const projects = c.work.personalProjects.map((p, i) => ({
+    ...p,
+    ...PERSONAL_META[i],
+  }));
+  const otherWork = c.work.otherWork;
+
   return (
     <section id="work" className="py-32 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
@@ -104,7 +42,7 @@ const ProofOfWork = () => {
             viewport={{ once: true }}
             className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
           >
-            What I build
+            {c.work.kicker}
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -112,7 +50,7 @@ const ProofOfWork = () => {
             viewport={{ once: true }}
             className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-7xl italic mb-4"
           >
-            Proof of Work
+            {c.work.title}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -121,7 +59,7 @@ const ProofOfWork = () => {
             transition={{ delay: 0.1 }}
             className="font-body text-muted-foreground max-w-lg leading-relaxed"
           >
-            I test architecture decisions before I recommend them.
+            {c.work.note}
           </motion.p>
         </div>
 
@@ -178,10 +116,10 @@ const ProofOfWork = () => {
                   className="inline-flex items-center gap-2 font-body text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
                   <Github className="w-3.5 h-3.5" />
-                  Source
+                  {c.work.source}
                 </a>
                 <span className="px-2 py-0.5 bg-primary/10 text-primary font-body text-xs">
-                  live
+                  {c.work.live}
                 </span>
                 <span className="px-2 py-0.5 border border-border text-muted-foreground font-body text-xs">
                   AGPL-3.0
@@ -198,7 +136,7 @@ const ProofOfWork = () => {
           viewport={{ once: true }}
           className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6"
         >
-          Professional
+          {c.work.professional}
         </motion.h4>
         <div className="grid md:grid-cols-3 gap-6 mb-16">
           {fachprojekte.map((project, index) => {
@@ -233,7 +171,7 @@ const ProofOfWork = () => {
           viewport={{ once: true }}
           className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6"
         >
-          Open source &amp; personal
+          {c.work.personal}
         </motion.h4>
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           {projects.map((project, index) => {
@@ -267,7 +205,7 @@ const ProofOfWork = () => {
                         </a>
                       )}
                     </div>
-                    {project.facets ? (
+                    {project.facets.length > 0 ? (
                       <dl className="space-y-2.5">
                         {project.facets.map((facet) => (
                           <div key={facet.label}>
@@ -300,7 +238,7 @@ const ProofOfWork = () => {
           className="border-t border-border pt-8"
         >
           <h4 className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-            Other work
+            {c.work.other}
           </h4>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {otherWork.map((item, index) => (

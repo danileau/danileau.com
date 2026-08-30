@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { Mail, MapPin, Github as GithubIcon } from "lucide-react";
+import { useI18n } from "@/i18n/use-i18n";
 
 const Footer = () => {
+  const { c } = useI18n();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -18,7 +20,7 @@ const Footer = () => {
           className="max-w-2xl mx-auto text-center mb-16"
         >
           <p className="font-display text-xl sm:text-2xl md:text-3xl italic text-foreground/80 leading-relaxed">
-            "It is possible — even when everything around you is screaming and will not stop."
+            {c.footer.quote}
           </p>
         </motion.div>
 
@@ -33,9 +35,7 @@ const Footer = () => {
               <span className="text-gradient italic">Danilo</span> Licitra
             </h3>
             <p className="font-body text-muted-foreground text-sm leading-relaxed max-w-xs">
-              System architect, engineer and musician.
-              Trumpet in classical orchestras and jazz big bands,
-              snowboard in winter, code all year.
+              {c.footer.blurb}
             </p>
           </motion.div>
 
@@ -46,7 +46,7 @@ const Footer = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            <h4 className="font-body text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">Contact</h4>
+            <h4 className="font-body text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">{c.footer.contact}</h4>
             <div className="space-y-4">
               <a
                 href="mailto:main@danileau.com"
@@ -57,7 +57,7 @@ const Footer = () => {
               </a>
               <div className="flex items-center gap-3 font-body text-muted-foreground">
                 <MapPin className="w-4 h-4" />
-                Bern, Switzerland
+                {c.footer.location}
               </div>
             </div>
           </motion.div>
@@ -69,7 +69,7 @@ const Footer = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <h4 className="font-body text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">Links</h4>
+            <h4 className="font-body text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">{c.footer.links}</h4>
             <div className="flex gap-2 md:gap-4">
               <a
                 href="https://github.com/danileau"
@@ -87,17 +87,17 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
           <p className="font-body text-xs text-muted-foreground">
-            &copy; {currentYear} Danilo Alessio Licitra. All rights reserved.
+            &copy; {currentYear} Danilo Alessio Licitra. {c.footer.rights}
           </p>
           <nav className="flex gap-6">
             <a href="#weg" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
-              The Path
+              {c.nav.path}
             </a>
             <a href="#work" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
-              Proof of Work
+              {c.nav.work}
             </a>
             <a href="#education" className="font-body text-xs text-muted-foreground hover:text-primary transition-colors">
-              Education
+              {c.nav.education}
             </a>
           </nav>
         </div>
