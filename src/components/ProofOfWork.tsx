@@ -1,53 +1,93 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Shield, Server, Brain, Layers } from "lucide-react";
+import { ExternalLink, Shield, Server, Github, Database, ScanSearch, ShieldCheck, Printer } from "lucide-react";
 
 const featured = {
   title: "ciphra",
-  subtitle: "Privacy-first Health Tracker — encrypted by design.",
-  description:
-    "Nachfolger meiner HF-Diplomarbeit epilepc.ch. E2E-verschlüsselt mit Argon2id + AES-256-GCM. SvelteKit, Flask, PostgreSQL. Blueprint-System für Epilepsie, ADHS, Diabetes, Migräne, Burnout. Eine Betreuerin hat mir gezeigt, dass ihr Excel-Abendcheck in 3 Minuten mehr leistet als mein Formular-Ansatz — also hab ich das UX-Konzept von Grund auf neu gedacht.",
+  subtitle: "Zero-knowledge health tracker — encrypted by design.",
+  facets: [
+    {
+      label: "Decision",
+      text: "Every key is derived in the browser. The server stores opaque blobs and cannot read health data — not under a court order, and not for me.",
+    },
+    {
+      label: "Price",
+      text: "A lost recovery code is a lost account. There is no reset. Anyone promising both safe and convenient is lying about one of them.",
+    },
+    {
+      label: "Surprise",
+      text: "A caregiver showed me that her three-minute evening check in a spreadsheet outperformed my form. Since then the benchmark is not the whitepaper — it is whatever that person would otherwise use.",
+    },
+  ],
   url: "https://ciphra.ch",
-  comingSoon: true,
+  repo: "https://github.com/danileau/ciphra",
   icon: Shield,
 };
 
-const projects = [
+const fachprojekte = [
   {
-    title: "archimate-js",
+    title: "Infrastruktur-Datenplattform",
     description:
-      "ArchiMate-Modeler auf Basis von bpmn.io. Weil die bestehenden Tools nicht reichen.",
-    icon: Layers,
-    url: "https://github.com/danileau/archimate-js",
+      "Consolidates IT infrastructure data from a dozen sources into PostgreSQL and correlates it across app ID, IP, team and hostname. Cross-layer analysis, automated dependency detection, cloud-readiness assessment. Python/FastAPI, React.",
+    icon: Database,
   },
   {
-    title: "secret-notes",
+    title: "Repository-Analysator",
     description:
-      "Zero-Knowledge Auth mit SRP-Protokoll. Demonstration, dass der Server nie das Passwort sehen muss.",
-    icon: Shield,
-    url: false,
+      "A CLI tool that detects the technology actually in use across code repositories — languages, frameworks, containers, IaC. Feeds the infrastructure platform. Python.",
+    icon: ScanSearch,
   },
   {
-    title: "SwissCovid App & Covid-Zertifikat",
+    title: "SBOM- & Vulnerability-Analyse",
     description:
-      "Projektmitarbeit Bundesverwaltung: Aufbau, Betrieb, Pikett. 7 Wochen von Null auf Live.",
-    icon: Brain,
-    url: false,
+      "Analyses software bills of materials and container images for known vulnerabilities, wired into DefectDojo. Python/Bash.",
+    icon: ShieldCheck,
+  },
+];
+
+type Facet = { label: string; text: string };
+
+const projects: {
+  title: string;
+  description?: string;
+  facets?: Facet[];
+  icon: typeof Shield;
+  url: string | false;
+}[] = [
+  {
+    title: "Pretty Please Print",
+    facets: [
+      {
+        label: "Decision",
+        text: "No public sign-up. An account cannot come into existence without an invitation — enforced in a single hook that every authentication method passes through.",
+      },
+      {
+        label: "Price",
+        text: "No multi-tenancy, no billing, no queue theory. Built for five people and one printer, and honest about it. AGPL, because the worry was reciprocity and not revenue.",
+      },
+      {
+        label: "Surprise",
+        text: "The restore procedure was written from reasoning, not from experience. The first real run — data destroyed in between, checked against a planted canary row — turned up three things that never surface in your head. Since then \"documented\" is not a status.",
+      },
+    ],
+    icon: Printer,
+    url: "https://github.com/danileau/prettypleaseprint",
   },
   {
     title: "Homelab",
     description:
-      "Bookstack, Plex, Manyfold, Plant-Monitor (ESP32/MQTT), Pixoo-REST. Wer Betrieb predigt, sollte ihn auch leben.",
+      "Bookstack, Plex, Manyfold, a plant monitor on ESP32/MQTT, Pixoo-REST. Anyone preaching operations should also live there.",
     icon: Server,
     url: false,
   },
 ];
 
 const otherWork = [
-  { title: "epilepc.ch", description: "Anfallstagebuch — HF-Diplomarbeit 2019" },
-  { title: "Les Ateliers", description: "Webshop, Bern" },
-  { title: "Couture Lui Luis", description: "Webpage, Bern" },
-  { title: "Musikgesellschaft Bern-Bümpliz", description: "Webpage" },
-  { title: "Lulus Leckereien", description: "IT-Support & Webpage" },
+  { title: "SwissCovid & Covid Certificate", description: "Build, operations, on-call — federal administration, 2020/21" },
+  { title: "epilepc.ch", description: "Seizure diary — HF thesis 2019, succeeded by ciphra" },
+  { title: "Les Ateliers", description: "Web shop, Bern" },
+  { title: "Couture Lui Luis", description: "Website & tools, Bern" },
+  { title: "Musikgesellschaft Bern-Bümpliz", description: "Website" },
+  { title: "Lulus Leckereien", description: "IT support & website" },
 ];
 
 const ProofOfWork = () => {
@@ -64,7 +104,7 @@ const ProofOfWork = () => {
             viewport={{ once: true }}
             className="font-body text-sm tracking-[0.3em] uppercase text-primary mb-4"
           >
-            Was ich baue
+            What I build
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -81,7 +121,7 @@ const ProofOfWork = () => {
             transition={{ delay: 0.1 }}
             className="font-body text-muted-foreground max-w-lg leading-relaxed"
           >
-            Architekturentscheide teste ich, bevor ich sie empfehle.
+            I test architecture decisions before I recommend them.
           </motion.p>
         </div>
 
@@ -109,22 +149,92 @@ const ProofOfWork = () => {
                   </p>
                 </div>
               </div>
-              <p className="font-body text-foreground/80 leading-relaxed max-w-3xl mb-6">
-                {featured.description}
-              </p>
-              <div className="flex items-center gap-3">
-                <span className="font-body text-xs text-muted-foreground tracking-wide">
+              <dl className="max-w-3xl mb-6 space-y-3">
+                {featured.facets.map((facet) => (
+                  <div key={facet.label} className="sm:flex sm:gap-6">
+                    <dt className="font-body text-xs tracking-[0.2em] uppercase text-primary sm:w-32 sm:flex-shrink-0 sm:pt-1 mb-1 sm:mb-0">
+                      {facet.label}
+                    </dt>
+                    <dd className="font-body text-foreground/80 leading-relaxed min-w-0">
+                      {facet.text}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href={featured.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-body text-xs text-foreground hover:text-primary transition-colors"
+                >
                   ciphra.ch
-                </span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href={featured.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-body text-xs text-muted-foreground hover:text-primary transition-colors"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  Source
+                </a>
                 <span className="px-2 py-0.5 bg-primary/10 text-primary font-body text-xs">
-                  coming soon
+                  live
+                </span>
+                <span className="px-2 py-0.5 border border-border text-muted-foreground font-body text-xs">
+                  AGPL-3.0
                 </span>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Secondary project grid */}
+        {/* Professional work */}
+        <motion.h4
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6"
+        >
+          Professional
+        </motion.h4>
+        <div className="grid md:grid-cols-3 gap-6 mb-16">
+          {fachprojekte.map((project, index) => {
+            const ProjectIcon = project.icon;
+            return (
+              <motion.div
+                key={project.title}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group relative p-6 sm:p-8 border border-border hover:border-primary/50 bg-card transition-all duration-300"
+              >
+                <div className="w-10 h-10 flex items-center justify-center bg-primary/10 text-primary mb-4">
+                  <ProjectIcon className="w-5 h-5" strokeWidth={1.5} />
+                </div>
+                <h3 className="font-display text-xl md:text-2xl mb-2 group-hover:text-primary transition-colors">
+                  {project.title}
+                </h3>
+                <p className="font-body text-sm text-muted-foreground leading-relaxed">
+                  {project.description}
+                </p>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Open source & personal */}
+        <motion.h4
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground mb-6"
+        >
+          Open source &amp; personal
+        </motion.h4>
         <div className="grid md:grid-cols-2 gap-6 mb-16">
           {projects.map((project, index) => {
             const ProjectIcon = project.icon;
@@ -148,7 +258,7 @@ const ProofOfWork = () => {
                       </h3>
                       {project.url && (
                         <a
-                          href={project.url as string}
+                          href={project.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-muted-foreground hover:text-primary transition-colors"
@@ -157,9 +267,24 @@ const ProofOfWork = () => {
                         </a>
                       )}
                     </div>
-                    <p className="font-body text-sm text-muted-foreground">
-                      {project.description}
-                    </p>
+                    {project.facets ? (
+                      <dl className="space-y-2.5">
+                        {project.facets.map((facet) => (
+                          <div key={facet.label}>
+                            <dt className="font-body text-[0.625rem] tracking-[0.2em] uppercase text-primary mb-0.5">
+                              {facet.label}
+                            </dt>
+                            <dd className="font-body text-sm text-muted-foreground leading-relaxed">
+                              {facet.text}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : (
+                      <p className="font-body text-sm text-muted-foreground">
+                        {project.description}
+                      </p>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -175,7 +300,7 @@ const ProofOfWork = () => {
           className="border-t border-border pt-8"
         >
           <h4 className="font-body text-xs tracking-[0.2em] uppercase text-muted-foreground mb-4">
-            Weitere Arbeiten
+            Other work
           </h4>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {otherWork.map((item, index) => (
