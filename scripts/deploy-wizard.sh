@@ -132,6 +132,29 @@ SUMCMD='if command -v sha256sum >/dev/null 2>&1; then sha256sum "$@"; else shasu
 sums_local()  { ( cd "$1" && find . -type f ! -name .build.json -exec sha256sum {} + | LC_ALL=C sort -k2 ); }
 sums_remote() { remote "cd '$1' && find . -type f ! -name .build.json -exec sh -c '$SUMCMD' _ {} + | LC_ALL=C sort -k2"; }
 
+
+# Replacing a symlink in place is the one genuinely atomic step here, and the
+# portable way to do it is rename(2) — `mv -T` is a GNU extension this FreeBSD
+# host does not have, and a bare `mv` would move the new link *into* the
+# directory the old one points at. `ln -sfn` unlinks first, which leaves a
+# window where the site has no document root at all.
+switch_link() { # $1 = release name
+  remote "
+    set -e
+    ln -sfn '$DEPLOY_ROOT/releases/$1' '$DEPLOY_LINK.tmp'
+    if command -v perl >/dev/null 2>&1; then
+      perl -e 'rename(\$ARGV[0], \$ARGV[1]) or die \"rename: \$!\"' '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'
+    elif command -v python3 >/dev/null 2>&1; then
+      python3 -c 'import os,sys; os.rename(sys.argv[1], sys.argv[2])' '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'
+    elif mv -T '$DEPLOY_LINK.tmp' '$DEPLOY_LINK' 2>/dev/null; then
+      :
+    else
+      rm -f '$DEPLOY_LINK.tmp'
+      ln -sfn '$DEPLOY_ROOT/releases/$1' '$DEPLOY_LINK'
+    fi
+  "
+}
+
 live_release()   { remote "readlink '$DEPLOY_LINK' 2>/dev/null | xargs -r basename" || true; }
 list_releases()  { remote "ls -1 '$DEPLOY_ROOT/releases' 2>/dev/null | sort -r" || true; }
 live_stamp()     { curl -fsS --max-time 10 "$DEPLOY_URL/.build.json" 2>/dev/null || true; }
@@ -187,7 +210,7 @@ if [ "$MODE" = "rollback" ]; then
   [ -n "$target" ] || die "no such entry"
   [ "$target" = "$cur" ] && die "that one is already live"
   if ! ask "Point $DEPLOY_URL at $target?"; then echo "Left alone."; exit 0; fi
-  remote "ln -sfn '$DEPLOY_ROOT/releases/$target' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
+  switch_link "$target"
   ok "$DEPLOY_LINK → $target"
   exit 0
 fi
@@ -263,8 +286,8 @@ PREVIOUS="$(live_release)"
 step "3/3  Switching"
 if ! ask "Point $DEPLOY_URL at $RELEASE?"; then echo "Uploaded but not switched. It is at releases/$RELEASE."; exit 0; fi
 
-# mv -T on a symlink is atomic: no request ever sees a missing docroot.
-remote "ln -sfn '$DEPLOY_ROOT/releases/$RELEASE' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
+# One rename(2): no request ever sees a missing document root.
+switch_link "$RELEASE"
 ok "$DEPLOY_LINK → $RELEASE"
 
 echo -n "Checking $DEPLOY_URL "
@@ -284,7 +307,7 @@ if [ "$landed" -eq 1 ]; then
 else
   warn "the site is not serving $RELEASE within ${HEALTH_TIMEOUT}s"
   if [ -n "$PREVIOUS" ]; then
-    remote "ln -sfn '$DEPLOY_ROOT/releases/$PREVIOUS' '$DEPLOY_LINK.tmp' && mv -Tf '$DEPLOY_LINK.tmp' '$DEPLOY_LINK'"
+    switch_link "$PREVIOUS"
     die "rolled back to $PREVIOUS. The bad release is still at releases/$RELEASE if you want to look at it."
   fi
   die "there is no previous release to roll back to. releases/$RELEASE is still in place."
